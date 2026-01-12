@@ -1,0 +1,74 @@
+GitHubリポジトリ作成・プッシュ手順
+
+
+1. リポジトリの作成(githubページ側)
+　・参考サイト
+　　・https://qiita.com/masato5579/items/8a08ea9988f4fd0097e3
+　　・https://it-memo.work/github-first-git-push-command/
+
+2. 作業ディレクトリに移動
+
+3. gitリポジトリを作成
+コマンド：git init
+
+4. ファイルをインデックスに登録
+コマンド：git add [ディレクトリ名]
+
+5. コミット
+コマンド：git commit -m "コメント"
+
+6. 現在のブランチをmainに変更
+git branch -M main
+
+7. リモートリポジトリを登録（「origin ＝ この GitHub リポジトリ」の紐づけ）
+git remote add origin https://github.com/[ユーザー名]/[リポジトリ名].git
+
+8. 修正をリモートリポジトリに反映
+git push origin main
+
+
+
+8で失敗したら...
+git remote rm origin　コマンド実行後、7,8を実行
+
+※remote:Invalid username or password が表示された場合
+  git config --global user.name ユーザー名 を実行後に再度プッシュ
+
+
+ファイル編集後
+
+1. git add [ディレクトリ名]
+2. git commit -m "コメント"
+3. git push origin main
+
+
+
+ひとつ前のコミットを取り消す
+git reset --soft HEAD^
+
+ひとつ前のプッシュを取り消す
+git reset --hart HEAD^
+
+二つ前のプッシュを取り消す
+git reset --hard HEAD^^
+
+再プッシュ
+git push -f origin HEAD
+
+
+
+コミットメッセージの修正
+git commit –-amend
+上記コマンド入力後にメッセージを修正して保存する
+
+addの取り消し
+git reset HEAD file_name
+
+変更の破棄(addされていないファイル)
+git checkout file_name
+
+
+
+コミットメッセージの修正
+①最新のコミットメッセージを修正: git commit --amend
+②強制的にリモートへプッシュ: git push --force origin <ブランチ名>

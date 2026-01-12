@@ -1,0 +1,82 @@
+import { eq, and, ne } from "drizzle-orm";
+import type { Database, FrontUserMaster } from "../../../../infrastructure/db";
+import { frontUserMaster, frontUserLoginMaster } from "../../../../infrastructure/db";
+import { FLG } from "../../../../const";
+import { FrontUserId, FrontUserName } from "../../../../domain";
+
+/**
+ * ユーザー更新リポジトリ
+ */
+export class UpdateFrontUserRepository {
+  constructor(private readonly db: Database) {}
+
+  /**
+   * 他のユーザーで同じユーザー名が存在するかチェック
+   * @param userId 自身のユーザーID
+   * @param userName ユーザー名
+   */
+  async checkUserNameExists(
+    userId: FrontUserId,
+    userName: FrontUserName
+  ): Promise<boolean> {
+    const result = await this.db
+      .select()
+      .from(frontUserMaster)
+      .where(
+        and(
+          eq(frontUserMaster.userName, userName.value),
+          ne(frontUserMaster.userId, userId.value),
+          eq(frontUserMaster.deleteFlg, FLG.OFF)
+        )
+      );
+    return result.length > 0;
+  }
+
+  /**
+   * ユーザー情報を更新
+   */
+  async updateFrontUser(
+    userId: FrontUserId,
+    userName: string,
+    userBirthday: string
+  ): Promise<FrontUserMaster | undefined> {
+    const now = new Date().toISOString();
+    const result = await this.db
+      .update(frontUserMaster)
+      .set({
+        userName,
+        userBirthday,
+        updatedAt: now,
+      })
+      .where(
+        and(
+          eq(frontUserMaster.userId, userId.value),
+          eq(frontUserMaster.deleteFlg, FLG.OFF)
+        )
+      )
+      .returning();
+    return result[0];
+  }
+
+  /**
+   * ログイン情報のユーザー名を更新
+   */
+  async updateFrontLoginUser(
+    userId: FrontUserId,
+    userName: string
+  ): Promise<void> {
+    const now = new Date().toISOString();
+    await this.db
+      .update(frontUserLoginMaster)
+      .set({
+        userName,
+        updatedAt: now,
+      })
+      .where(
+        and(
+          eq(frontUserLoginMaster.userId, userId.value),
+          eq(frontUserLoginMaster.deleteFlg, FLG.OFF)
+        )
+      );
+  }
+}

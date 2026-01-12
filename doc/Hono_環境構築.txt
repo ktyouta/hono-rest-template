@@ -1,0 +1,9 @@
+Hono環境構築
+
+①npm create hono@latest <プロジェクト名> を実行
+
+②cloudflare-workersにデプロイする場合は、templateの選択で「cloudflare-workers」を選択
+
+
+※プロジェクトの実行コマンド
+npm run dev
