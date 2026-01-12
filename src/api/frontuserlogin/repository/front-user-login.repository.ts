@@ -6,12 +6,13 @@ import type {
 } from "../../../infrastructure/db";
 import { frontUserLoginMaster, frontUserMaster } from "../../../infrastructure/db";
 import { FLG } from "../../../const";
-import { FrontUserName, FrontUserId } from "../../../domain";
+import type { FrontUserName, FrontUserId } from "../../../domain";
+import type { IFrontUserLoginRepository } from "./front-user-login.repository.interface";
 
 /**
- * ログインリポジトリ
+ * ログインリポジトリ実装
  */
-export class FrontUserLoginRepository {
+export class FrontUserLoginRepository implements IFrontUserLoginRepository {
   constructor(private readonly db: Database) {}
 
   /**

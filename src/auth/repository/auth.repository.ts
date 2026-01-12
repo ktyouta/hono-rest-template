@@ -2,12 +2,13 @@ import { eq, and } from "drizzle-orm";
 import type { Database, FrontUserMaster } from "../../infrastructure/db";
 import { frontUserMaster } from "../../infrastructure/db";
 import { FLG } from "../../const";
-import { FrontUserId } from "../../domain";
+import type { FrontUserId } from "../../domain";
+import type { IAuthRepository } from "./auth.repository.interface";
 
 /**
- * 認証リポジトリ
+ * 認証リポジトリ実装
  */
-export class AuthRepository {
+export class AuthRepository implements IAuthRepository {
   constructor(private readonly db: Database) {}
 
   /**

@@ -1,6 +1,7 @@
 import { HTTP_STATUS } from "../../../const";
 import type { Database } from "../../../infrastructure/db";
 import { RefreshToken, AccessToken } from "../../../domain";
+import { RefreshRepository } from "../repository";
 import { RefreshService } from "../service";
 
 type Output =
@@ -34,7 +35,8 @@ export class RefreshUseCase {
   private readonly service: RefreshService;
 
   constructor(db: Database) {
-    this.service = new RefreshService(db);
+    const repository = new RefreshRepository(db);
+    this.service = new RefreshService(repository);
   }
 
   async execute(

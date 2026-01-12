@@ -9,6 +9,7 @@ import {
   AccessToken,
   RefreshToken,
 } from "../../../domain";
+import { FrontUserLoginRepository } from "../repository";
 import { FrontUserLoginService } from "../service";
 import { FrontUserLoginResponseDto, FrontUserLoginResponseType } from "../dto";
 import type { FrontUserLoginSchemaType } from "../schema";
@@ -44,7 +45,8 @@ export class FrontUserLoginUseCase {
   private readonly service: FrontUserLoginService;
 
   constructor(db: Database) {
-    this.service = new FrontUserLoginService(db);
+    const repository = new FrontUserLoginRepository(db);
+    this.service = new FrontUserLoginService(repository);
   }
 
   private unauthorized(): Output {

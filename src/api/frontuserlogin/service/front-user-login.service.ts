@@ -1,20 +1,15 @@
 import type {
-  Database,
   FrontUserLoginMaster,
   FrontUserMaster,
 } from "../../../infrastructure/db";
-import { FrontUserName, FrontUserId } from "../../../domain";
-import { FrontUserLoginRepository } from "../repository";
+import type { FrontUserName, FrontUserId } from "../../../domain";
+import type { IFrontUserLoginRepository } from "../repository";
 
 /**
  * ログインサービス
  */
 export class FrontUserLoginService {
-  private readonly repository: FrontUserLoginRepository;
-
-  constructor(db: Database) {
-    this.repository = new FrontUserLoginRepository(db);
-  }
+  constructor(private readonly repository: IFrontUserLoginRepository) {}
 
   /**
    * ログイン情報を取得

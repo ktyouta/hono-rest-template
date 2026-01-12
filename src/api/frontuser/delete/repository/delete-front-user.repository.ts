@@ -2,12 +2,13 @@ import { eq, and } from "drizzle-orm";
 import type { Database } from "../../../../infrastructure/db";
 import { frontUserMaster, frontUserLoginMaster } from "../../../../infrastructure/db";
 import { FLG } from "../../../../const";
-import { FrontUserId } from "../../../../domain";
+import type { FrontUserId } from "../../../../domain";
+import type { IDeleteFrontUserRepository } from "./delete-front-user.repository.interface";
 
 /**
- * ユーザー削除リポジトリ
+ * ユーザー削除リポジトリ実装
  */
-export class DeleteFrontUserRepository {
+export class DeleteFrontUserRepository implements IDeleteFrontUserRepository {
   constructor(private readonly db: Database) {}
 
   /**

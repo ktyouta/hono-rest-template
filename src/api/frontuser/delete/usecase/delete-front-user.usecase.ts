@@ -1,6 +1,7 @@
 import { HTTP_STATUS } from "../../../../const";
 import type { Database } from "../../../../infrastructure/db";
 import { FrontUserId } from "../../../../domain";
+import { DeleteFrontUserRepository } from "../repository";
 import { DeleteFrontUserService } from "../service";
 
 type Output =
@@ -22,7 +23,8 @@ export class DeleteFrontUserUseCase {
   private readonly service: DeleteFrontUserService;
 
   constructor(db: Database) {
-    this.service = new DeleteFrontUserService(db);
+    const repository = new DeleteFrontUserRepository(db);
+    this.service = new DeleteFrontUserService(repository);
   }
 
   async execute(userId: FrontUserId): Promise<Output> {

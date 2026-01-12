@@ -1,16 +1,11 @@
-import type { Database } from "../../../../infrastructure/db";
-import { FrontUserId } from "../../../../domain";
-import { DeleteFrontUserRepository } from "../repository";
+import type { FrontUserId } from "../../../../domain";
+import type { IDeleteFrontUserRepository } from "../repository";
 
 /**
  * ユーザー削除サービス
  */
 export class DeleteFrontUserService {
-  private readonly repository: DeleteFrontUserRepository;
-
-  constructor(db: Database) {
-    this.repository = new DeleteFrontUserRepository(db);
-  }
+  constructor(private readonly repository: IDeleteFrontUserRepository) {}
 
   /**
    * ユーザー情報を削除

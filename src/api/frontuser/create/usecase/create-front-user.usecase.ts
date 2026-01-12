@@ -9,6 +9,7 @@ import {
   AccessToken,
   RefreshToken,
 } from "../../../../domain";
+import { CreateFrontUserRepository } from "../repository";
 import { CreateFrontUserService } from "../service";
 import { FrontUserEntity, FrontUserLoginEntity } from "../entity";
 import { CreateFrontUserResponseDto, CreateFrontUserResponseType } from "../dto";
@@ -45,7 +46,8 @@ export class CreateFrontUserUseCase {
   private readonly service: CreateFrontUserService;
 
   constructor(private readonly db: Database) {
-    this.service = new CreateFrontUserService(db);
+    const repository = new CreateFrontUserRepository(db);
+    this.service = new CreateFrontUserService(repository, db);
   }
 
   async execute(

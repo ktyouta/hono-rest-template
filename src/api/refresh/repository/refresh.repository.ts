@@ -2,12 +2,13 @@ import { eq, and } from "drizzle-orm";
 import type { Database, FrontUserMaster } from "../../../infrastructure/db";
 import { frontUserMaster } from "../../../infrastructure/db";
 import { FLG } from "../../../const";
-import { FrontUserId } from "../../../domain";
+import type { FrontUserId } from "../../../domain";
+import type { IRefreshRepository } from "./refresh.repository.interface";
 
 /**
- * リフレッシュリポジトリ
+ * リフレッシュリポジトリ実装
  */
-export class RefreshRepository {
+export class RefreshRepository implements IRefreshRepository {
   constructor(private readonly db: Database) {}
 
   /**

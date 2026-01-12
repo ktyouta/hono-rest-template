@@ -2,13 +2,14 @@ import { eq, and } from "drizzle-orm";
 import type { Database, FrontUserMaster } from "../../../../infrastructure/db";
 import { frontUserMaster, frontUserLoginMaster } from "../../../../infrastructure/db";
 import { FLG } from "../../../../const";
-import { FrontUserName } from "../../../../domain";
-import { FrontUserEntity, FrontUserLoginEntity } from "../entity";
+import type { FrontUserName } from "../../../../domain";
+import type { FrontUserEntity, FrontUserLoginEntity } from "../entity";
+import type { ICreateFrontUserRepository } from "./create-front-user.repository.interface";
 
 /**
- * ユーザー作成リポジトリ
+ * ユーザー作成リポジトリ実装
  */
-export class CreateFrontUserRepository {
+export class CreateFrontUserRepository implements ICreateFrontUserRepository {
   constructor(private readonly db: Database) {}
 
   /**

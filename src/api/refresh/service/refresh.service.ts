@@ -1,16 +1,12 @@
-import type { Database, FrontUserMaster } from "../../../infrastructure/db";
-import { FrontUserId } from "../../../domain";
-import { RefreshRepository } from "../repository";
+import type { FrontUserMaster } from "../../../infrastructure/db";
+import type { FrontUserId } from "../../../domain";
+import type { IRefreshRepository } from "../repository";
 
 /**
  * リフレッシュサービス
  */
 export class RefreshService {
-  private readonly repository: RefreshRepository;
-
-  constructor(db: Database) {
-    this.repository = new RefreshRepository(db);
-  }
+  constructor(private readonly repository: IRefreshRepository) {}
 
   /**
    * ユーザー情報を取得

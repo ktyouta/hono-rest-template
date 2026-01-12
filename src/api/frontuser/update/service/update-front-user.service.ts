@@ -1,16 +1,12 @@
-import type { Database, FrontUserMaster } from "../../../../infrastructure/db";
-import { FrontUserId, FrontUserName } from "../../../../domain";
-import { UpdateFrontUserRepository } from "../repository";
+import type { FrontUserMaster } from "../../../../infrastructure/db";
+import type { FrontUserId, FrontUserName } from "../../../../domain";
+import type { IUpdateFrontUserRepository } from "../repository";
 
 /**
  * ユーザー更新サービス
  */
 export class UpdateFrontUserService {
-  private readonly repository: UpdateFrontUserRepository;
-
-  constructor(db: Database) {
-    this.repository = new UpdateFrontUserRepository(db);
-  }
+  constructor(private readonly repository: IUpdateFrontUserRepository) {}
 
   /**
    * ユーザー名の重複チェック（自身を除く）

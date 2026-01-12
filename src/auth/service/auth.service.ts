@@ -1,12 +1,12 @@
 import type { FrontUserMaster } from "../../infrastructure/db";
-import { FrontUserId } from "../../domain";
-import { AuthRepository } from "../repository";
+import type { FrontUserId } from "../../domain";
+import type { IAuthRepository } from "../repository";
 
 /**
  * 認証サービス
  */
 export class AuthService {
-  constructor(private readonly repository: AuthRepository) {}
+  constructor(private readonly repository: IAuthRepository) {}
 
   /**
    * ユーザーIDでユーザー情報を取得

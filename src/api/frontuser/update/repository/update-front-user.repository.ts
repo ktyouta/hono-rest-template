@@ -2,12 +2,13 @@ import { eq, and, ne } from "drizzle-orm";
 import type { Database, FrontUserMaster } from "../../../../infrastructure/db";
 import { frontUserMaster, frontUserLoginMaster } from "../../../../infrastructure/db";
 import { FLG } from "../../../../const";
-import { FrontUserId, FrontUserName } from "../../../../domain";
+import type { FrontUserId, FrontUserName } from "../../../../domain";
+import type { IUpdateFrontUserRepository } from "./update-front-user.repository.interface";
 
 /**
- * ユーザー更新リポジトリ
+ * ユーザー更新リポジトリ実装
  */
-export class UpdateFrontUserRepository {
+export class UpdateFrontUserRepository implements IUpdateFrontUserRepository {
   constructor(private readonly db: Database) {}
 
   /**

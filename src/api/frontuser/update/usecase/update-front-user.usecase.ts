@@ -6,6 +6,7 @@ import {
   FrontUserBirthday,
   RefreshToken,
 } from "../../../../domain";
+import { UpdateFrontUserRepository } from "../repository";
 import { UpdateFrontUserService } from "../service";
 import { UpdateFrontUserResponseDto, UpdateFrontUserResponseType } from "../dto";
 import type { UpdateFrontUserSchemaType } from "../schema";
@@ -38,7 +39,8 @@ export class UpdateFrontUserUseCase {
   private readonly service: UpdateFrontUserService;
 
   constructor(db: Database) {
-    this.service = new UpdateFrontUserService(db);
+    const repository = new UpdateFrontUserRepository(db);
+    this.service = new UpdateFrontUserService(repository);
   }
 
   async execute(

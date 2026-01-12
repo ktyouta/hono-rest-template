@@ -3,8 +3,11 @@ export class Header {
 
     private readonly _value: Headers;
 
-    constructor(headers: Headers) {
-        this._value = headers;
+    constructor(req: Request) {
+        if (!req) {
+            throw Error(`リクエストが存在しません。`);
+        }
+        this._value = req.headers;
     }
 
     get headers() {

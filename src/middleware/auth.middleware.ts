@@ -1,4 +1,4 @@
-import { Header } from "@/domain/header/header";
+import { Header } from "../domain/header";
 import type { MiddlewareHandler } from "hono";
 import { AuthRepository, AuthService } from "../auth";
 import { HTTP_STATUS } from "../const";
@@ -12,7 +12,7 @@ import { ApiResponse } from "../util";
  */
 export const authMiddleware: MiddlewareHandler<AppEnv> = async (c, next) => {
   try {
-    const header = new Header(c.req.raw.headers);
+    const header = new Header(c.req.raw);
     const accessToken = AccessToken.get(header);
 
     const jwtKey = c.env.ACCESS_TOKEN_JWT_KEY;
