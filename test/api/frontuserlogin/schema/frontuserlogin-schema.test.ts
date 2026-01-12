@@ -1,0 +1,51 @@
+import { describe, it, expect } from "vitest";
+import { FrontUserLoginSchema } from "../../../../src/api/frontuserlogin/schema";
+
+describe("FrontUserLogin Schema Validation", () => {
+  describe("FrontUserLoginSchema", () => {
+    it("正常なデータでバリデーションを通過すること", () => {
+      const result = FrontUserLoginSchema.safeParse({
+        userName: "testuser",
+        password: "password123",
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it("ユーザー名が空の場合にエラーになること", () => {
+      const result = FrontUserLoginSchema.safeParse({
+        userName: "",
+        password: "password123",
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].message).toBe(
+          "ユーザー名を入力してください"
+        );
+      }
+    });
+
+    it("パスワードが空の場合にエラーになること", () => {
+      const result = FrontUserLoginSchema.safeParse({
+        userName: "testuser",
+        password: "",
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].message).toBe(
+          "パスワードを入力してください"
+        );
+      }
+    });
+
+    it("ユーザー名とパスワードが両方空の場合に複数エラーになること", () => {
+      const result = FrontUserLoginSchema.safeParse({
+        userName: "",
+        password: "",
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues).toHaveLength(2);
+      }
+    });
+  });
+});

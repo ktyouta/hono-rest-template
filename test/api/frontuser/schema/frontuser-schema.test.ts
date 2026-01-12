@@ -1,22 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { CreateFrontUserSchema } from "../../src/api/frontuser/create/schema";
+import { CreateFrontUserSchema } from "../../../../src/api/frontuser/create/schema";
 import {
   UpdateFrontUserSchema,
   UserIdParamSchema,
-} from "../../src/api/frontuser/update/schema";
-import {
-  FrontUserEntity,
-  FrontUserLoginEntity,
-} from "../../src/api/frontuser/create/entity";
-import { CreateFrontUserResponseDto } from "../../src/api/frontuser/create/dto";
-import {
-  FrontUserId,
-  FrontUserName,
-  FrontUserBirthday,
-  FrontUserSalt,
-  FrontUserPassword,
-  Pepper,
-} from "../../src/domain";
+} from "../../../../src/api/frontuser/update/schema";
 
 describe("FrontUser Schema Validation", () => {
   describe("CreateFrontUserSchema", () => {
@@ -162,53 +149,5 @@ describe("FrontUser Schema Validation", () => {
         );
       }
     });
-  });
-});
-
-describe("FrontUserEntity", () => {
-  it("エンティティを生成できること", () => {
-    const userId = FrontUserId.of(1);
-    const userName = new FrontUserName("testuser");
-    const userBirthday = new FrontUserBirthday("19900101");
-
-    const entity = new FrontUserEntity(userId, userName, userBirthday);
-
-    expect(entity.frontUserId).toBe(1);
-    expect(entity.frontUserName).toBe("testuser");
-    expect(entity.frontUserBirthday).toBe("19900101");
-  });
-});
-
-describe("FrontUserLoginEntity", () => {
-  it("エンティティを生成できること", async () => {
-    const userId = FrontUserId.of(1);
-    const userName = new FrontUserName("testuser");
-    const salt = FrontUserSalt.generate();
-    const pepper = new Pepper("test-pepper");
-    const password = await FrontUserPassword.hash("password123", salt, pepper);
-
-    const entity = new FrontUserLoginEntity(userId, userName, password, salt);
-
-    expect(entity.frontUserId).toBe(1);
-    expect(entity.frontUserName).toBe("testuser");
-    expect(entity.salt).toBe(salt.value);
-    expect(entity.frontUserPassword).toBe(password.value);
-  });
-});
-
-describe("CreateFrontUserResponseDto", () => {
-  it("エンティティからDTOを生成できること", () => {
-    const userId = FrontUserId.of(1);
-    const userName = new FrontUserName("testuser");
-    const userBirthday = new FrontUserBirthday("19900101");
-    const entity = new FrontUserEntity(userId, userName, userBirthday);
-    const accessToken = "test-access-token";
-
-    const dto = new CreateFrontUserResponseDto(entity, accessToken);
-
-    expect(dto.value.accessToken).toBe("test-access-token");
-    expect(dto.value.user.userId).toBe(1);
-    expect(dto.value.user.userName).toBe("testuser");
-    expect(dto.value.user.birthday).toBe("19900101");
   });
 });
