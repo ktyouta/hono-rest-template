@@ -2,23 +2,26 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { setCookie } from "hono/cookie";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { API_ENDPOINT, HTTP_STATUS } from "../../const";
-import type { AppEnv } from "../../type";
-import { ApiResponse, formatZodErrors } from "../../util";
-import { createDbClient } from "../../infrastructure/db";
-import { RefreshToken } from "../../domain";
-import { FrontUserLoginSchema, FrontUserLoginUseCase } from "./";
+import { API_ENDPOINT, HTTP_STATUS } from "../../../../const";
+import type { AppEnv } from "../../../../type";
+import { ApiResponse, formatZodErrors } from "../../../../util";
+import { createDbClient } from "../../../../infrastructure/db";
+import { RefreshToken } from "../../../../domain";
+import { userOperationGuardMiddleware } from "../../../../middleware";
+import { CreateFrontUserSchema } from "../schema";
+import { CreateFrontUserUseCase } from "../usecase";
 
 
-const frontuserlogin = new Hono<AppEnv>();
+const createFrontUser = new Hono<AppEnv>();
 
 /**
- * ログイン
- * @route POST /api/v1/frontuserlogin
+ * ユーザー作成
+ * @route POST /api/v1/frontuser
  */
-frontuserlogin.post(
-    API_ENDPOINT.FRONT_USER_LOGIN,
-    zValidator("json", FrontUserLoginSchema, (result, c) => {
+createFrontUser.post(
+    API_ENDPOINT.FRONT_USER,
+    userOperationGuardMiddleware,
+    zValidator("json", CreateFrontUserSchema, (result, c) => {
         if (!result.success) {
             return ApiResponse.create(
                 c,
@@ -32,7 +35,7 @@ frontuserlogin.post(
 
         const body = c.req.valid("json");
         const db = createDbClient(c.env.DB);
-        const useCase = new FrontUserLoginUseCase(db);
+        const useCase = new CreateFrontUserUseCase(db);
 
         const result = await useCase.execute(body);
 
@@ -61,4 +64,4 @@ frontuserlogin.post(
     }
 );
 
-export { frontuserlogin };
+export { createFrontUser };

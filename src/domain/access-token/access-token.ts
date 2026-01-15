@@ -1,76 +1,125 @@
 import { sign, verify } from "hono/jwt";
+import { envConfig } from "../../config";
+import { parseDuration } from "../../util";
 import { FrontUserId } from "../front-user-id";
 import { Header } from "../header/header";
 import { AccessTokenError } from "./access-token.error";
 
-/**
- * アクセストークン
- */
+
 export class AccessToken {
-  private static readonly HEADER_KEY = "Authorization";
-  private static readonly SCHEME = "Bearer";
 
-  private readonly _token: string;
+    // トークン
+    private readonly _value: string;
+    // ヘッダーのキー
+    static readonly HEADER_KEY: string = `Authorization`;
+    // 認証スキーム
+    static readonly SCHEME: string = `Bearer`;
 
-  private constructor(token: string) {
-    this._token = token;
-  }
-
-  get token(): string {
-    return this._token;
-  }
-
-  /**
-   * アクセストークンを生成
-   * @param frontUserId ユーザーID
-   * @param jwtKey JWT署名キー
-   * @param expires 有効期限（秒）
-   */
-  static async create(
-    frontUserId: FrontUserId,
-    jwtKey: string,
-    expires: number
-  ): Promise<AccessToken> {
-    const now = Math.floor(Date.now() / 1000);
-    const payload = {
-      sub: String(frontUserId.value),
-      iat: now,
-      exp: now + expires,
-    };
-    const token = await sign(payload, jwtKey);
-    return new AccessToken(token);
-  }
-
-  /**
-   * Authorizationヘッダからアクセストークンを取得
-   * @param authHeader Authorizationヘッダの値
-   */
-  static get(header: Header): AccessToken {
-
-    const authHeader = header.get(AccessToken.HEADER_KEY) || ``;
-
-    if (!authHeader) {
-      throw new AccessTokenError("Authorizationヘッダが設定されていません。");
+    private constructor(token: string) {
+        this._value = token;
     }
 
-    const parts = authHeader.split(" ");
-    if (parts.length !== 2 || parts[0] !== AccessToken.SCHEME) {
-      throw new AccessTokenError("Authorizationヘッダの形式が不正です。");
+    /**
+     * トークンを取得
+     * @param header
+     * @returns
+     */
+    static get(header: Header) {
+
+        const authHeader = header.get(AccessToken.HEADER_KEY) || ``;
+        const [scheme, token] = authHeader.split(` `);
+
+        const accessToken = scheme === AccessToken.SCHEME && token ? token : ``;
+
+        if (!accessToken) {
+            throw new AccessTokenError(`Authorizationヘッダの形式が不正です。`);
+        }
+
+        return new AccessToken(accessToken);
     }
 
-    return new AccessToken(parts[1]);
-  }
+    /**
+     * トークンの発行
+     * @param frontUserId
+     * @returns
+     */
+    static async create(frontUserId: FrontUserId) {
 
-  /**
-   * トークンを検証してペイロードを取得
-   * @param jwtKey JWT署名キー
-   */
-  async getPayload(jwtKey: string): Promise<FrontUserId> {
-    const decoded = await verify(this._token, jwtKey);
-    const userId = Number(decoded.sub);
-    if (!userId) {
-      throw new AccessTokenError("トークンのペイロードが不正です。");
+        const jwtKey = envConfig.accessTokenJwtKey;
+        const expires = envConfig.accessTokenExpires;
+
+        if (!jwtKey) {
+            throw Error(`設定ファイルにjwt(アクセス)の秘密鍵が設定されていません。`);
+        }
+
+        if (!expires) {
+            throw Error(`設定ファイルにアクセストークンの有効期限が設定されていません。`);
+        }
+
+        const id = frontUserId.value;
+
+        if (!id) {
+            throw Error(`アクセストークンの作成にはユーザーIDが必要です。`);
+        }
+
+        const now = Math.floor(Date.now() / 1000);
+        const expiresSec = parseDuration(expires) / 1000;
+
+        const payload = {
+            sub: `${id}`,
+            iat: now,
+            exp: now + expiresSec,
+        };
+
+        const token = await sign(payload, jwtKey);
+
+        return new AccessToken(token);
     }
-    return FrontUserId.of(userId);
-  }
+
+    /**
+     * トークンチェック
+     * @returns
+     */
+    private async verify() {
+
+        const jwtKey = envConfig.accessTokenJwtKey;
+
+        try {
+
+            const decoded = await verify(this.token, jwtKey);
+
+            if (!decoded || typeof decoded !== `object`) {
+                throw new AccessTokenError(`アクセストークンが不正です。`);
+            }
+
+            return decoded;
+        } catch (err) {
+            throw new AccessTokenError(`アクセストークンの検証に失敗しました。${err}`);
+        }
+    }
+
+    /**
+     * トークンのペイロードを取得
+     * @returns
+     */
+    async getPayload() {
+
+        const decode = await this.verify();
+
+        if (!decode.sub) {
+            throw new Error(`subが設定されていません。`);
+        }
+
+        const userId = Number(decode.sub);
+
+        if (Number.isNaN(userId)) {
+            throw new Error(`ユーザーIDが不正です。`);
+        }
+
+        return FrontUserId.of(userId);
+    }
+
+    get token() {
+        return this._value;
+    }
 }

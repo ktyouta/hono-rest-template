@@ -1,104 +1,97 @@
 import { HTTP_STATUS } from "../../../../const";
 import type { Database } from "../../../../infrastructure/db";
 import {
-  FrontUserId,
-  FrontUserName,
-  FrontUserBirthday,
-  RefreshToken,
+    FrontUserId,
+    FrontUserName,
+    FrontUserBirthday,
+    RefreshToken,
 } from "../../../../domain";
 import { UpdateFrontUserRepository } from "../repository";
 import { UpdateFrontUserService } from "../service";
 import { UpdateFrontUserResponseDto, UpdateFrontUserResponseType } from "../dto";
 import type { UpdateFrontUserSchemaType } from "../schema";
 
-type Output =
-  | {
-      success: true;
-      status: number;
-      message: string;
-      data: {
-        response: UpdateFrontUserResponseType;
-        refreshToken: string;
-      };
-    }
-  | {
-      success: false;
-      status: number;
-      message: string;
-    };
 
-type EnvConfig = {
-  refreshTokenJwtKey: string;
-  refreshTokenExpires: number;
-};
+type Output =
+    | {
+        success: true;
+        status: number;
+        message: string;
+        data: {
+            response: UpdateFrontUserResponseType;
+            refreshToken: string;
+        };
+    }
+    | {
+        success: false;
+        status: number;
+        message: string;
+    };
 
 /**
  * ユーザー更新ユースケース
  */
 export class UpdateFrontUserUseCase {
-  private readonly service: UpdateFrontUserService;
 
-  constructor(db: Database) {
-    const repository = new UpdateFrontUserRepository(db);
-    this.service = new UpdateFrontUserService(repository);
-  }
+    private readonly service: UpdateFrontUserService;
 
-  async execute(
-    userId: FrontUserId,
-    requestBody: UpdateFrontUserSchemaType,
-    env: EnvConfig
-  ): Promise<Output> {
-    const userName = new FrontUserName(requestBody.userName);
-    const userBirthday = new FrontUserBirthday(requestBody.userBirthday);
-
-    // ユーザー名重複チェック（自身を除く）
-    if (await this.service.checkUserNameExists(userId, userName)) {
-      return {
-        success: false,
-        status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
-        message: "既にユーザーが存在しています。",
-      };
+    constructor(db: Database) {
+        const repository = new UpdateFrontUserRepository(db);
+        this.service = new UpdateFrontUserService(repository);
     }
 
-    // ログイン情報を更新
-    await this.service.updateFrontLoginUser(userId, userName.value);
+    async execute(
+        userId: FrontUserId,
+        requestBody: UpdateFrontUserSchemaType
+    ): Promise<Output> {
 
-    // ユーザー情報を更新
-    const updated = await this.service.updateFrontUser(
-      userId,
-      userName.value,
-      userBirthday.value
-    );
+        const userName = new FrontUserName(requestBody.userName);
+        const userBirthday = new FrontUserBirthday(requestBody.userBirthday);
 
-    if (!updated) {
-      return {
-        success: false,
-        status: HTTP_STATUS.NOT_FOUND,
-        message: "ユーザーが見つかりません。",
-      };
+        // ユーザー名重複チェック（自身を除く）
+        if (await this.service.checkUserNameExists(userId, userName)) {
+            return {
+                success: false,
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+                message: "既にユーザーが存在しています。",
+            };
+        }
+
+        // ログイン情報を更新
+        await this.service.updateFrontLoginUser(userId, userName.value);
+
+        // ユーザー情報を更新
+        const updated = await this.service.updateFrontUser(
+            userId,
+            userName.value,
+            userBirthday.value
+        );
+
+        if (!updated) {
+            return {
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "ユーザーが見つかりません。",
+            };
+        }
+
+        // 新しいリフレッシュトークンを発行
+        const refreshToken = await RefreshToken.create(userId);
+
+        const responseDto = new UpdateFrontUserResponseDto(
+            updated.userId,
+            updated.userName,
+            updated.userBirthday
+        );
+
+        return {
+            success: true,
+            status: HTTP_STATUS.OK,
+            message: "ユーザー情報の更新が完了しました。",
+            data: {
+                response: responseDto.value,
+                refreshToken: refreshToken.value,
+            },
+        };
     }
-
-    // 新しいリフレッシュトークンを発行
-    const refreshToken = await RefreshToken.create(
-      userId,
-      env.refreshTokenJwtKey,
-      env.refreshTokenExpires
-    );
-
-    const responseDto = new UpdateFrontUserResponseDto(
-      updated.userId,
-      updated.userName,
-      updated.userBirthday
-    );
-
-    return {
-      success: true,
-      status: HTTP_STATUS.OK,
-      message: "ユーザー情報の更新が完了しました。",
-      data: {
-        response: responseDto.value,
-        refreshToken: refreshToken.value,
-      },
-    };
-  }
 }

@@ -3,3 +3,4 @@ export * from "./dto";
 export * from "./repository";
 export * from "./service";
 export * from "./usecase";
+export * from "./controller/update-front-user.controller";

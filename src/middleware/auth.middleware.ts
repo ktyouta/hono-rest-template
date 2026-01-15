@@ -7,39 +7,41 @@ import { createDbClient } from "../infrastructure/db";
 import type { AppEnv } from "../type";
 import { ApiResponse } from "../util";
 
+
 /**
  * 認証ミドルウェア
  */
 export const authMiddleware: MiddlewareHandler<AppEnv> = async (c, next) => {
-  try {
-    const header = new Header(c.req.raw);
-    const accessToken = AccessToken.get(header);
 
-    const jwtKey = c.env.ACCESS_TOKEN_JWT_KEY;
-    const userId = await accessToken.getPayload(jwtKey);
+    try {
 
-    const db = createDbClient(c.env.DB);
-    const repository = new AuthRepository(db);
-    const service = new AuthService(repository);
+        const header = new Header(c.req.raw);
+        const accessToken = AccessToken.get(header);
 
-    const userInfo = await service.getUserById(userId);
+        const userId = await accessToken.getPayload();
 
-    if (!userInfo) {
-      return ApiResponse.create(c, HTTP_STATUS.UNAUTHORIZED, "認証エラー");
+        const db = createDbClient(c.env.DB);
+        const repository = new AuthRepository(db);
+        const service = new AuthService(repository);
+
+        const userInfo = await service.getUserById(userId);
+
+        if (!userInfo) {
+            return ApiResponse.create(c, HTTP_STATUS.UNAUTHORIZED, "認証エラー");
+        }
+
+        c.set("user", {
+            userId,
+            info: {
+                userId: userInfo.userId,
+                userName: userInfo.userName,
+                birthday: userInfo.userBirthday,
+            },
+        });
+
+        await next();
+    } catch (err) {
+        console.error("Auth error:", err);
+        return ApiResponse.create(c, HTTP_STATUS.UNAUTHORIZED, "認証エラー");
     }
-
-    c.set("user", {
-      userId,
-      info: {
-        userId: userInfo.userId,
-        userName: userInfo.userName,
-        birthday: userInfo.userBirthday,
-      },
-    });
-
-    await next();
-  } catch (err) {
-    console.error("Auth error:", err);
-    return ApiResponse.create(c, HTTP_STATUS.UNAUTHORIZED, "認証エラー");
-  }
 };

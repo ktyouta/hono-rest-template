@@ -1,13 +1,14 @@
 import { HTTP_STATUS } from "../../../../const";
+import { envConfig } from "../../../../config";
 import type { Database } from "../../../../infrastructure/db";
 import {
-  FrontUserName,
-  FrontUserBirthday,
-  FrontUserSalt,
-  FrontUserPassword,
-  Pepper,
-  AccessToken,
-  RefreshToken,
+    FrontUserName,
+    FrontUserBirthday,
+    FrontUserSalt,
+    FrontUserPassword,
+    Pepper,
+    AccessToken,
+    RefreshToken,
 } from "../../../../domain";
 import { CreateFrontUserRepository } from "../repository";
 import { CreateFrontUserService } from "../service";
@@ -15,106 +16,90 @@ import { FrontUserEntity, FrontUserLoginEntity } from "../entity";
 import { CreateFrontUserResponseDto, CreateFrontUserResponseType } from "../dto";
 import type { CreateFrontUserSchemaType } from "../schema";
 
-type Output =
-  | {
-      success: true;
-      status: number;
-      message: string;
-      data: {
-        response: CreateFrontUserResponseType;
-        refreshToken: string;
-      };
-    }
-  | {
-      success: false;
-      status: number;
-      message: string;
-    };
 
-type EnvConfig = {
-  accessTokenJwtKey: string;
-  accessTokenExpires: number;
-  refreshTokenJwtKey: string;
-  refreshTokenExpires: number;
-  pepper: string;
-};
+type Output =
+    | {
+        success: true;
+        status: number;
+        message: string;
+        data: {
+            response: CreateFrontUserResponseType;
+            refreshToken: string;
+        };
+    }
+    | {
+        success: false;
+        status: number;
+        message: string;
+    };
 
 /**
  * ユーザー作成ユースケース
  */
 export class CreateFrontUserUseCase {
-  private readonly service: CreateFrontUserService;
 
-  constructor(private readonly db: Database) {
-    const repository = new CreateFrontUserRepository(db);
-    this.service = new CreateFrontUserService(repository, db);
-  }
+    private readonly service: CreateFrontUserService;
 
-  async execute(
-    requestBody: CreateFrontUserSchemaType,
-    env: EnvConfig
-  ): Promise<Output> {
-    // ドメインオブジェクトを生成
-    const userName = new FrontUserName(requestBody.userName);
-    const userBirthday = new FrontUserBirthday(requestBody.userBirthday);
-    const salt = FrontUserSalt.generate();
-    const pepper = new Pepper(env.pepper);
-    const userPassword = await FrontUserPassword.hash(
-      requestBody.password,
-      salt,
-      pepper
-    );
-
-    // ユーザー名重複チェック
-    if (await this.service.checkUserNameExists(userName)) {
-      return {
-        success: false,
-        status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
-        message: "既にユーザーが存在しています。",
-      };
+    constructor(private readonly db: Database) {
+        const repository = new CreateFrontUserRepository(db);
+        this.service = new CreateFrontUserService(repository, db);
     }
 
-    // ユーザーIDを採番
-    const frontUserId = await this.service.createUserId();
+    async execute(requestBody: CreateFrontUserSchemaType): Promise<Output> {
 
-    // ログイン情報を挿入
-    const loginUserEntity = new FrontUserLoginEntity(
-      frontUserId,
-      userName,
-      userPassword,
-      salt
-    );
-    await this.service.insertFrontLoginUser(loginUserEntity);
+        // ドメインオブジェクトを生成
+        const userName = new FrontUserName(requestBody.userName);
+        const userBirthday = new FrontUserBirthday(requestBody.userBirthday);
+        const salt = FrontUserSalt.generate();
+        const pepper = new Pepper(envConfig.pepper);
+        const userPassword = await FrontUserPassword.hash(
+            requestBody.password,
+            salt,
+            pepper
+        );
 
-    // ユーザー情報を挿入
-    const userEntity = new FrontUserEntity(frontUserId, userName, userBirthday);
-    await this.service.insertFrontUser(userEntity);
+        // ユーザー名重複チェック
+        if (await this.service.checkUserNameExists(userName)) {
+            return {
+                success: false,
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+                message: "既にユーザーが存在しています。",
+            };
+        }
 
-    // トークンを発行
-    const accessToken = await AccessToken.create(
-      frontUserId,
-      env.accessTokenJwtKey,
-      env.accessTokenExpires
-    );
-    const refreshToken = await RefreshToken.create(
-      frontUserId,
-      env.refreshTokenJwtKey,
-      env.refreshTokenExpires
-    );
+        // ユーザーIDを採番
+        const frontUserId = await this.service.createUserId();
 
-    const responseDto = new CreateFrontUserResponseDto(
-      userEntity,
-      accessToken.token
-    );
+        // ログイン情報を挿入
+        const loginUserEntity = new FrontUserLoginEntity(
+            frontUserId,
+            userName,
+            userPassword,
+            salt
+        );
+        await this.service.insertFrontLoginUser(loginUserEntity);
 
-    return {
-      success: true,
-      status: HTTP_STATUS.CREATED,
-      message: "ユーザー情報の登録が完了しました。",
-      data: {
-        response: responseDto.value,
-        refreshToken: refreshToken.value,
-      },
-    };
-  }
+        // ユーザー情報を挿入
+        const userEntity = new FrontUserEntity(frontUserId, userName, userBirthday);
+        await this.service.insertFrontUser(userEntity);
+
+        // トークンを発行
+        const accessToken = await AccessToken.create(frontUserId);
+        const refreshToken = await RefreshToken.create(frontUserId);
+
+        const responseDto = new CreateFrontUserResponseDto(
+            userEntity,
+            accessToken.token
+        );
+
+        return {
+            success: true,
+            status: HTTP_STATUS.CREATED,
+            message: "ユーザー情報の登録が完了しました。",
+            data: {
+                response: responseDto.value,
+                refreshToken: refreshToken.value,
+            },
+        };
+    }
 }
