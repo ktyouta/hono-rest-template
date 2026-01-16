@@ -1,12 +1,12 @@
-import { Hono } from "hono";
+import { Context, Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { API_ENDPOINT, HTTP_STATUS } from "../../const";
-import type { AppEnv } from "../../type";
-import { ApiResponse } from "../../util";
-import { createDbClient } from "../../infrastructure/db";
-import { RefreshToken } from "../../domain";
-import { RefreshUseCase } from "./usecase";
+import { API_ENDPOINT, HTTP_STATUS } from "../../../const";
+import { RefreshToken } from "../../../domain";
+import { createDbClient } from "../../../infrastructure/db";
+import type { AppEnv } from "../../../type";
+import { ApiResponse } from "../../../util";
+import { RefreshUseCase } from "../usecase";
 
 
 const refresh = new Hono<AppEnv>();
@@ -15,7 +15,7 @@ const refresh = new Hono<AppEnv>();
  * トークンリフレッシュ
  * @route POST /api/v1/refresh
  */
-refresh.post(API_ENDPOINT.REFRESH, async (c) => {
+refresh.post(API_ENDPOINT.REFRESH, async (c: Context<AppEnv>) => {
 
     try {
 

@@ -1,7 +1,7 @@
-import { HTTP_STATUS } from "../../../const";
 import { envConfig } from "../../../config";
+import { HTTP_STATUS } from "../../../const";
+import { AccessToken, RefreshToken } from "../../../domain";
 import type { Database } from "../../../infrastructure/db";
-import { RefreshToken, AccessToken } from "../../../domain";
 import { RefreshRepository } from "../repository";
 import { RefreshService } from "../service";
 
@@ -41,7 +41,7 @@ export class RefreshUseCase {
     ): Promise<Output> {
 
         // Origin チェック
-        if (!origin || origin !== envConfig.corsOrigin) {
+        if (!origin || !envConfig.corsOrigin.includes(origin)) {
             return {
                 success: false,
                 status: HTTP_STATUS.UNAUTHORIZED,

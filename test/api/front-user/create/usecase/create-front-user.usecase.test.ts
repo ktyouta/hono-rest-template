@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CreateFrontUserUseCase } from "../../../../../src/api/front-user/create/usecase/create-front-user.usecase";
 import { HTTP_STATUS } from "../../../../../src/const";
 import { FrontUserId } from "../../../../../src/domain";
@@ -63,6 +63,7 @@ describe("CreateFrontUserUseCase", () => {
         userName: "testuser",
         password: "password123",
         userBirthday: "19900101",
+        confirmPassword: "password123",
     };
 
     beforeEach(() => {

@@ -1,9 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { RefreshUseCase } from "../../../../src/api/refresh/usecase/refresh.usecase";
 import { HTTP_STATUS } from "../../../../src/const";
 import { FrontUserId } from "../../../../src/domain";
 import type { Database } from "../../../../src/infrastructure/db";
 
+
+// vi.hoisted()を使用してモック用の変数をホイスト
+const mockRefreshTokenInstance = vi.hoisted(() => ({
+    getPayload: vi.fn(),
+    isAbsoluteExpired: vi.fn(),
+    refresh: vi.fn(),
+}));
 
 // モック
 vi.mock("../../../../src/api/refresh/repository", () => ({
@@ -18,7 +25,7 @@ vi.mock("../../../../src/api/refresh/service", () => ({
 
 vi.mock("../../../../src/config", () => ({
     envConfig: {
-        corsOrigin: "http://localhost:3000",
+        corsOrigin: ["http://localhost:3000"],
         accessTokenJwtKey: "test-access-key",
         accessTokenExpires: "1h",
         refreshTokenJwtKey: "test-refresh-key",
@@ -31,12 +38,6 @@ vi.mock("../../../../src/domain/access-token/access-token", () => ({
         create: vi.fn().mockResolvedValue({ token: "mock-access-token" }),
     },
 }));
-
-const mockRefreshTokenInstance = {
-    getPayload: vi.fn().mockResolvedValue(FrontUserId.of(1)),
-    isAbsoluteExpired: vi.fn().mockResolvedValue(false),
-    refresh: vi.fn().mockResolvedValue({ value: "new-mock-refresh-token" }),
-};
 
 vi.mock("../../../../src/domain/refresh-token/refresh-token", () => ({
     RefreshToken: {

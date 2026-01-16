@@ -13,7 +13,7 @@
   "vars": {
     "ACCESS_TOKEN_EXPIRES": "15m",
     "REFRESH_TOKEN_EXPIRES": "7d",
-    "CORS_ORIGIN": "http://localhost:3000",
+    "CORS_ORIGIN": ["http://localhost:3000"],
     "ALLOW_USER_OPERATION": "true",
     "ENV_PRODUCTION": "false"
   }

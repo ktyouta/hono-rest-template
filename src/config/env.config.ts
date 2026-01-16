@@ -3,21 +3,21 @@
  * Cloudflare Workers環境ではenv bindingsから取得
  */
 export type EnvConfig = {
-  // JWT認証キー
-  ACCESS_TOKEN_JWT_KEY: string;
-  ACCESS_TOKEN_EXPIRES: string;
-  REFRESH_TOKEN_JWT_KEY: string;
-  REFRESH_TOKEN_EXPIRES: string;
+    // JWT認証キー
+    ACCESS_TOKEN_JWT_KEY: string;
+    ACCESS_TOKEN_EXPIRES: string;
+    REFRESH_TOKEN_JWT_KEY: string;
+    REFRESH_TOKEN_EXPIRES: string;
 
-  // パスワード
-  PEPPER: string;
+    // パスワード
+    PEPPER: string;
 
-  // CORS
-  CORS_ORIGIN: string;
+    // CORS
+    CORS_ORIGIN: string[];
 
-  // 機能制御
-  ALLOW_USER_OPERATION: string;
-  ENV_PRODUCTION: string;
+    // 機能制御
+    ALLOW_USER_OPERATION: string;
+    ENV_PRODUCTION: string;
 };
 
 
@@ -31,7 +31,7 @@ class EnvConfigSingleton {
     private _refreshTokenJwtKey: string = ``;
     private _refreshTokenExpires: string = ``;
     private _pepper: string = ``;
-    private _corsOrigin: string = ``;
+    private _corsOrigin: string[] = [];
     private _isProduction: boolean = false;
 
     /**
@@ -43,7 +43,7 @@ class EnvConfigSingleton {
         this._refreshTokenJwtKey = env.REFRESH_TOKEN_JWT_KEY || ``;
         this._refreshTokenExpires = env.REFRESH_TOKEN_EXPIRES || ``;
         this._pepper = env.PEPPER || ``;
-        this._corsOrigin = env.CORS_ORIGIN || ``;
+        this._corsOrigin = env.CORS_ORIGIN || [];
         this._isProduction = env.ENV_PRODUCTION === `true`;
     }
 
@@ -83,8 +83,8 @@ export const envConfig = new EnvConfigSingleton();
  * 環境フラグを取得
  */
 export function getEnvFlags(env: Partial<EnvConfig>) {
-  return {
-    isProduction: env.ENV_PRODUCTION === "true",
-    allowUserOperation: env.ALLOW_USER_OPERATION === "true",
-  };
+    return {
+        isProduction: env.ENV_PRODUCTION === "true",
+        allowUserOperation: env.ALLOW_USER_OPERATION === "true",
+    };
 }

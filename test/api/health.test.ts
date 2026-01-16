@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import app from "../../src/index";
+import { describe, it, expect, vi, beforeAll } from "vitest";
+import { SELF } from "cloudflare:test";
 
 type HealthResponse = {
   status: number;
@@ -17,7 +17,7 @@ type ErrorResponse = {
 
 describe("Health Check API", () => {
   it("GET /api/v1/health - 正常にレスポンスを返すこと", async () => {
-    const res = await app.request("/api/v1/health");
+    const res = await SELF.fetch("http://localhost/api/v1/health");
 
     expect(res.status).toBe(200);
 
@@ -31,7 +31,7 @@ describe("Health Check API", () => {
 
 describe("Not Found Handler", () => {
   it("存在しないエンドポイントで404を返すこと", async () => {
-    const res = await app.request("/api/v1/not-exist");
+    const res = await SELF.fetch("http://localhost/api/v1/not-exist");
 
     expect(res.status).toBe(404);
 

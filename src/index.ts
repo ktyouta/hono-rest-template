@@ -1,20 +1,36 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import type { AppEnv } from "./type";
+import { frontUser, frontUserLogin, health, refresh, sample } from "./api";
+import { envConfig } from "./config";
 import {
-  envInitMiddleware,
-  requestIdMiddleware,
   accessLogMiddleware,
+  envInitMiddleware,
   errorHandler,
   notFoundHandler,
+  requestIdMiddleware,
 } from "./middleware";
-import { health, sample, frontUser, frontUserLogin, refresh } from "./api";
+import type { AppEnv } from "./type";
 
 const app = new Hono<AppEnv>();
 
 // ミドルウェア設定
 app.use("*", envInitMiddleware);
-app.use("*", cors());
+app.use(
+  '*',
+  cors({
+    origin: envConfig.corsOrigin,
+    credentials: true,
+    allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+      'Authorization',
+      'X-CSRF-Token',
+    ],
+  })
+);
 app.use("*", requestIdMiddleware);
 app.use("*", accessLogMiddleware);
 

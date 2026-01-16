@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import { API_ENDPOINT, HTTP_STATUS } from "../../const";
-import type { AppEnv } from "../../type";
-import { ApiResponse } from "../../util";
+import { API_ENDPOINT, HTTP_STATUS } from "../../../const";
+import type { AppEnv } from "../../../type";
+import { ApiResponse } from "../../../util";
 
 const health = new Hono<AppEnv>();
 
