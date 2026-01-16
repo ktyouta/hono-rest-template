@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { FrontUserLoginSchema } from "../../../../src/api/frontuserlogin/schema";
+import { FrontUserLoginSchema } from "../../../../src/api/front-user-login/schema";
 
 describe("FrontUserLogin Schema Validation", () => {
   describe("FrontUserLoginSchema", () => {

@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { UpdateFrontUserUseCase } from "../../../../../src/api/frontuser/update/usecase/update-front-user.usecase";
+import { UpdateFrontUserUseCase } from "../../../../../src/api/front-user/update/usecase/update-front-user.usecase";
 import { HTTP_STATUS } from "../../../../../src/const";
 import { FrontUserId } from "../../../../../src/domain";
 import type { Database } from "../../../../../src/infrastructure/db";
 
 
 // モック
-vi.mock("../../../../../src/api/frontuser/update/repository", () => ({
+vi.mock("../../../../../src/api/front-user/update/repository", () => ({
     UpdateFrontUserRepository: vi.fn(),
 }));
 
-vi.mock("../../../../../src/api/frontuser/update/service", () => ({
+vi.mock("../../../../../src/api/front-user/update/service", () => ({
     UpdateFrontUserService: vi.fn().mockImplementation(() => ({
         checkUserNameExists: vi.fn(),
         updateFrontLoginUser: vi.fn(),

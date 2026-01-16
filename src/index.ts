@@ -8,7 +8,7 @@ import {
   errorHandler,
   notFoundHandler,
 } from "./middleware";
-import { health, sample, frontuser, frontuserlogin, refresh } from "./api";
+import { health, sample, frontUser, frontUserLogin, refresh } from "./api";
 
 const app = new Hono<AppEnv>();
 
@@ -25,8 +25,8 @@ app.notFound(notFoundHandler);
 // ルーティング
 app.route("/", health);
 app.route("/", sample);
-app.route("/", frontuser);
-app.route("/", frontuserlogin);
+app.route("/", frontUser);
+app.route("/", frontUserLogin);
 app.route("/", refresh);
 
 export default app;

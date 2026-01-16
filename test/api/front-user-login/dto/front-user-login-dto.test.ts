@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { FrontUserLoginResponseDto } from "../../../../src/api/frontuserlogin/dto";
+import { FrontUserLoginResponseDto } from "../../../../src/api/front-user-login/dto";
 import type { FrontUserMaster } from "../../../../src/infrastructure/db";
 
 describe("FrontUserLoginResponseDto", () => {

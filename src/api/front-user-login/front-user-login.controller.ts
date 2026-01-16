@@ -10,13 +10,13 @@ import { RefreshToken } from "../../domain";
 import { FrontUserLoginSchema, FrontUserLoginUseCase } from "./";
 
 
-const frontuserlogin = new Hono<AppEnv>();
+const frontUserLogin = new Hono<AppEnv>();
 
 /**
  * ログイン
- * @route POST /api/v1/frontuserlogin
+ * @route POST /api/v1/frontUserLogin
  */
-frontuserlogin.post(
+frontUserLogin.post(
     API_ENDPOINT.FRONT_USER_LOGIN,
     zValidator("json", FrontUserLoginSchema, (result, c) => {
         if (!result.success) {
@@ -61,4 +61,4 @@ frontuserlogin.post(
     }
 );
 
-export { frontuserlogin };
+export { frontUserLogin };

@@ -5,11 +5,11 @@ import { updateFrontUser } from "./update/controller/update-front-user.controlle
 import { deleteFrontUser } from "./delete/controller/delete-front-user.controller";
 
 
-const frontuser = new Hono<AppEnv>();
+const frontUser = new Hono<AppEnv>();
 
 // ルーティング
-frontuser.route("/", createFrontUser);
-frontuser.route("/", updateFrontUser);
-frontuser.route("/", deleteFrontUser);
+frontUser.route("/", createFrontUser);
+frontUser.route("/", updateFrontUser);
+frontUser.route("/", deleteFrontUser);
 
-export { frontuser };
+export { frontUser };

@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { CreateFrontUserUseCase } from "../../../../../src/api/frontuser/create/usecase/create-front-user.usecase";
+import { CreateFrontUserUseCase } from "../../../../../src/api/front-user/create/usecase/create-front-user.usecase";
 import { HTTP_STATUS } from "../../../../../src/const";
 import { FrontUserId } from "../../../../../src/domain";
 import type { Database } from "../../../../../src/infrastructure/db";
 
 
 // モック
-vi.mock("../../../../../src/api/frontuser/create/repository", () => ({
+vi.mock("../../../../../src/api/front-user/create/repository", () => ({
     CreateFrontUserRepository: vi.fn(),
 }));
 
-vi.mock("../../../../../src/api/frontuser/create/service", () => ({
+vi.mock("../../../../../src/api/front-user/create/service", () => ({
     CreateFrontUserService: vi.fn().mockImplementation(() => ({
         checkUserNameExists: vi.fn(),
         createUserId: vi.fn(),

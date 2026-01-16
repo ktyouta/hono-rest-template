@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { DeleteFrontUserUseCase } from "../../../../../src/api/frontuser/delete/usecase/delete-front-user.usecase";
+import { DeleteFrontUserUseCase } from "../../../../../src/api/front-user/delete/usecase/delete-front-user.usecase";
 import { HTTP_STATUS } from "../../../../../src/const";
 import { FrontUserId } from "../../../../../src/domain";
 import type { Database } from "../../../../../src/infrastructure/db";
 
 
 // モック
-vi.mock("../../../../../src/api/frontuser/delete/repository", () => ({
+vi.mock("../../../../../src/api/front-user/delete/repository", () => ({
     DeleteFrontUserRepository: vi.fn(),
 }));
 
-vi.mock("../../../../../src/api/frontuser/delete/service", () => ({
+vi.mock("../../../../../src/api/front-user/delete/service", () => ({
     DeleteFrontUserService: vi.fn().mockImplementation(() => ({
         deleteFrontLoginUser: vi.fn(),
         deleteFrontUser: vi.fn(),

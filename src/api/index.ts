@@ -1,5 +1,5 @@
 export * from "./health";
 export * from "./sample";
-export * from "./frontuser";
-export * from "./frontuserlogin";
+export * from "./front-user";
+export * from "./front-user-login";
 export * from "./refresh";
