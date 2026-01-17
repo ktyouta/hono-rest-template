@@ -23,15 +23,6 @@ export type AuthUserType = {
 export type AppEnv = {
   Bindings: {
     DB: D1Database;
-    // JWT認証キー
-    ACCESS_TOKEN_JWT_KEY: string;
-    ACCESS_TOKEN_EXPIRES: string;
-    REFRESH_TOKEN_JWT_KEY: string;
-    REFRESH_TOKEN_EXPIRES: string;
-    // パスワード
-    PEPPER: string;
-    // CORS
-    CORS_ORIGIN: string;
     // 機能制御
     ALLOW_USER_OPERATION: string;
     ENV_PRODUCTION: string;

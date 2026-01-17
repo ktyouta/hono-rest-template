@@ -3,7 +3,7 @@ import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 /**
  * サンプルテーブルスキーマ
  */
-export const samples = sqliteTable("samples", {
+export const sample = sqliteTable("sample", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
   description: text("description"),
@@ -12,8 +12,8 @@ export const samples = sqliteTable("samples", {
   updatedAt: text("updated_at").notNull(),
 });
 
-export type Sample = typeof samples.$inferSelect;
-export type NewSample = typeof samples.$inferInsert;
+export type Sample = typeof sample.$inferSelect;
+export type NewSample = typeof sample.$inferInsert;
 
 /**
  * フロントユーザーマスタ
