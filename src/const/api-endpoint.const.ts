@@ -8,6 +8,7 @@ export const API_ENDPOINT = {
   FRONT_USER_ID: "/api/v1/frontuser/:userId",
   FRONT_USER_LOGIN: "/api/v1/frontuserlogin",
   REFRESH: "/api/v1/refresh",
+  AUTH: "/api/v1/auth",
 } as const;
 
 export type ApiEndpointType = (typeof API_ENDPOINT)[keyof typeof API_ENDPOINT];

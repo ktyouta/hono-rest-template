@@ -1,5 +1,4 @@
 import { sign, verify } from "hono/jwt";
-import type { JwtPayload } from "hono/utils/jwt/types";
 import { envConfig } from "../../config";
 import { parseDuration } from "../../util";
 import { FrontUserId } from "../front-user-id";
@@ -142,7 +141,7 @@ export class RefreshToken {
 
         try {
 
-            const decoded = await verify(this.value, jwtKey) as JwtPayload;
+            const decoded = await verify(this.value, jwtKey);
 
             if (!decoded || typeof decoded !== `object`) {
                 throw Error(`リフレッシュトークンが不正です。`);

@@ -2,6 +2,7 @@
   "name": "hono-rest-template",
   "type": "module",
   "scripts": {
+    "start":"npm run dev",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --minify",
     "test": "vitest",

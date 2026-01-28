@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { frontUser, frontUserLogin, health, refresh, sample } from "./api";
+import { auth } from "./api/auth/controller";
 import { envConfig } from "./config";
 import {
   accessLogMiddleware,
@@ -44,5 +45,6 @@ app.route("/", sample);
 app.route("/", frontUser);
 app.route("/", frontUserLogin);
 app.route("/", refresh);
+app.route("/", auth)
 
 export default app;
