@@ -1,5 +1,5 @@
 import type { MiddlewareHandler } from "hono";
-import { HTTP_STATUS } from "../const";
+import { HTTP_STATUS } from "../constant";
 import type { AppEnv } from "../type";
 import { ApiResponse } from "../util";
 
@@ -14,11 +14,7 @@ export const userOperationGuardMiddleware: MiddlewareHandler<AppEnv> = async (
   const allowUserOperation = c.env.ALLOW_USER_OPERATION === "true";
 
   if (!allowUserOperation) {
-    return ApiResponse.create(
-      c,
-      HTTP_STATUS.FORBIDDEN,
-      "この機能は現在の環境では無効化されています。"
-    );
+    return ApiResponse.create(c, HTTP_STATUS.FORBIDDEN, "この機能は現在の環境では無効化されています。");
   }
 
   await next();

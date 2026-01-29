@@ -1,15 +1,15 @@
-import { eq, and } from "drizzle-orm";
-import type { Database } from "../../../../infrastructure/db";
-import { frontUserMaster, frontUserLoginMaster } from "../../../../infrastructure/db";
-import { FLG } from "../../../../const";
+import { and, eq } from "drizzle-orm";
+import { FLG } from "../../../../constant";
 import type { FrontUserId } from "../../../../domain";
+import type { Database } from "../../../../infrastructure/db";
+import { frontUserLoginMaster, frontUserMaster } from "../../../../infrastructure/db";
 import type { IDeleteFrontUserRepository } from "./delete-front-user.repository.interface";
 
 /**
  * ユーザー削除リポジトリ実装
  */
 export class DeleteFrontUserRepository implements IDeleteFrontUserRepository {
-  constructor(private readonly db: Database) {}
+  constructor(private readonly db: Database) { }
 
   /**
    * ユーザー情報を論理削除

@@ -1,9 +1,9 @@
 import { ContentfulStatusCode } from "hono/utils/http-status";
-import { HTTP_STATUS } from "../../../const";
+import { HTTP_STATUS } from "../../../constant";
 import { AccessToken, RefreshToken } from "../../../domain";
 import type { Database } from "../../../infrastructure/db";
-import { AuthRepository } from "../repository/auth.repository";
-import { AuthService } from "../service/auth.service";
+import { VerifyRepository } from "../repository/verify.repository";
+import { VerifyService } from "../service/verify.service";
 
 
 type Output =
@@ -24,13 +24,13 @@ type Output =
 /**
  * 認証チェックユースケース
  */
-export class AuthUseCase {
+export class VerifyUseCase {
 
-    private readonly service: AuthService;
+    private readonly service: VerifyService;
 
     constructor(db: Database) {
-        const repository = new AuthRepository(db);
-        this.service = new AuthService(repository);
+        const repository = new VerifyRepository(db);
+        this.service = new VerifyService(repository);
     }
 
     async execute(

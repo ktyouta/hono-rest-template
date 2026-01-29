@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CreateFrontUserUseCase } from "../../../../../src/api/front-user/create/usecase/create-front-user.usecase";
-import { HTTP_STATUS } from "../../../../../src/const";
+import { HTTP_STATUS } from "../../../../../src/constant";
 import { FrontUserId } from "../../../../../src/domain";
 import type { Database } from "../../../../../src/infrastructure/db";
 

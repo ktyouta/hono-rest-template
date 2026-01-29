@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { API_ENDPOINT, HTTP_STATUS } from "../../../const";
+import { API_ENDPOINT, HTTP_STATUS } from "../../../constant";
 import type { AppEnv } from "../../../type";
 import { ApiResponse } from "../../../util";
 
@@ -17,3 +17,4 @@ health.get(API_ENDPOINT.HEALTH, (c) => {
 });
 
 export { health };
+

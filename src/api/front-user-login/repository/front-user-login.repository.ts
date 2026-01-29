@@ -1,19 +1,19 @@
-import { eq, and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { FLG } from "../../../constant";
+import type { FrontUserId, FrontUserName } from "../../../domain";
 import type {
   Database,
   FrontUserLoginMaster,
   FrontUserMaster,
 } from "../../../infrastructure/db";
 import { frontUserLoginMaster, frontUserMaster } from "../../../infrastructure/db";
-import { FLG } from "../../../const";
-import type { FrontUserName, FrontUserId } from "../../../domain";
 import type { IFrontUserLoginRepository } from "./front-user-login.repository.interface";
 
 /**
  * ログインリポジトリ実装
  */
 export class FrontUserLoginRepository implements IFrontUserLoginRepository {
-  constructor(private readonly db: Database) {}
+  constructor(private readonly db: Database) { }
 
   /**
    * ユーザー名でログイン情報を取得

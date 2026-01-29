@@ -1,23 +1,24 @@
-import { HTTP_STATUS } from "../../../../const";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
+import { HTTP_STATUS } from "../../../../constant";
 import type { DeleteSampleService } from "../service";
 
 type Output =
   | {
-      success: true;
-      status: number;
-      message: string;
-    }
+    success: true;
+    status: ContentfulStatusCode;
+    message: string;
+  }
   | {
-      success: false;
-      status: number;
-      message: string;
-    };
+    success: false;
+    status: ContentfulStatusCode;
+    message: string;
+  };
 
 /**
  * サンプル削除ユースケース
  */
 export class DeleteSampleUseCase {
-  constructor(private readonly service: DeleteSampleService) {}
+  constructor(private readonly service: DeleteSampleService) { }
 
   async execute(id: number): Promise<Output> {
     const deleted = await this.service.delete(id);

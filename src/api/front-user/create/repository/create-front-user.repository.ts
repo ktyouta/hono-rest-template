@@ -1,8 +1,8 @@
-import { eq, and } from "drizzle-orm";
-import type { Database, FrontUserMaster } from "../../../../infrastructure/db";
-import { frontUserMaster, frontUserLoginMaster } from "../../../../infrastructure/db";
-import { FLG } from "../../../../const";
+import { and, eq } from "drizzle-orm";
+import { FLG } from "../../../../constant";
 import type { FrontUserName } from "../../../../domain";
+import type { Database, FrontUserMaster } from "../../../../infrastructure/db";
+import { frontUserLoginMaster, frontUserMaster } from "../../../../infrastructure/db";
 import type { FrontUserEntity, FrontUserLoginEntity } from "../entity";
 import type { ICreateFrontUserRepository } from "./create-front-user.repository.interface";
 
@@ -10,7 +10,7 @@ import type { ICreateFrontUserRepository } from "./create-front-user.repository.
  * ユーザー作成リポジトリ実装
  */
 export class CreateFrontUserRepository implements ICreateFrontUserRepository {
-  constructor(private readonly db: Database) {}
+  constructor(private readonly db: Database) { }
 
   /**
    * ユーザー名でユーザーを検索

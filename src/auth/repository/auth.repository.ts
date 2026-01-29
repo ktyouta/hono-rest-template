@@ -1,15 +1,15 @@
-import { eq, and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { FLG } from "../../constant";
+import type { FrontUserId } from "../../domain";
 import type { Database, FrontUserMaster } from "../../infrastructure/db";
 import { frontUserMaster } from "../../infrastructure/db";
-import { FLG } from "../../const";
-import type { FrontUserId } from "../../domain";
 import type { IAuthRepository } from "./auth.repository.interface";
 
 /**
  * 認証リポジトリ実装
  */
 export class AuthRepository implements IAuthRepository {
-  constructor(private readonly db: Database) {}
+  constructor(private readonly db: Database) { }
 
   /**
    * ユーザーIDでユーザー情報を取得

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { RefreshUseCase } from "../../../../src/api/refresh/usecase/refresh.usecase";
+import { VerifyUseCase } from "../../../../src/api/verify/usecase/verify.usecase";
 import { HTTP_STATUS } from "../../../../src/constant";
-import { FrontUserId } from "../../../../src/domain";
+import { FrontUserId, RefreshToken } from "../../../../src/domain";
 import type { Database } from "../../../../src/infrastructure/db";
 
 
@@ -9,23 +9,21 @@ import type { Database } from "../../../../src/infrastructure/db";
 const mockRefreshTokenInstance = vi.hoisted(() => ({
     getPayload: vi.fn(),
     isAbsoluteExpired: vi.fn(),
-    refresh: vi.fn(),
 }));
 
 // モック
-vi.mock("../../../../src/api/refresh/repository", () => ({
-    RefreshRepository: vi.fn(),
+vi.mock("../../../../src/api/verify/repository/verify.repository", () => ({
+    VerifyRepository: vi.fn(),
 }));
 
-vi.mock("../../../../src/api/refresh/service", () => ({
-    RefreshService: vi.fn().mockImplementation(() => ({
+vi.mock("../../../../src/api/verify/service/verify.service", () => ({
+    VerifyService: vi.fn().mockImplementation(() => ({
         getUser: vi.fn(),
     })),
 }));
 
 vi.mock("../../../../src/config", () => ({
     envConfig: {
-        corsOrigin: ["http://localhost:3000"],
         accessTokenJwtKey: "test-access-key",
         accessTokenExpires: "1h",
         refreshTokenJwtKey: "test-refresh-key",
@@ -46,14 +44,10 @@ vi.mock("../../../../src/domain/refresh-token/refresh-token", () => ({
 }));
 
 
-describe("RefreshUseCase", () => {
+describe("VerifyUseCase", () => {
 
     let mockDb: Database;
-    let useCase: RefreshUseCase;
-
-    const validRefreshToken = "valid-refresh-token";
-    const validOrigin = "http://localhost:3000";
-    const validCsrfToken = "web";
+    let useCase: VerifyUseCase;
 
     const mockUserInfo = {
         userId: 1,
@@ -63,23 +57,23 @@ describe("RefreshUseCase", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockDb = {} as Database;
-        useCase = new RefreshUseCase(mockDb);
+        useCase = new VerifyUseCase(mockDb);
 
         // リセット
         mockRefreshTokenInstance.getPayload.mockResolvedValue(FrontUserId.of(1));
         mockRefreshTokenInstance.isAbsoluteExpired.mockResolvedValue(false);
-        mockRefreshTokenInstance.refresh.mockResolvedValue({ value: "new-mock-refresh-token" });
     });
 
     describe("execute", () => {
 
-        it("正常系: トークンリフレッシュに成功する", async () => {
+        it("正常系: 認証チェックに成功する", async () => {
             // Arrange
             const mockService = (useCase as any).service;
             mockService.getUser = vi.fn().mockResolvedValue(mockUserInfo);
+            const refreshToken = RefreshToken.get("valid-refresh-token");
 
             // Act
-            const result = await useCase.execute(validRefreshToken, validOrigin, validCsrfToken);
+            const result = await useCase.execute(refreshToken);
 
             // Assert
             expect(result.success).toBe(true);
@@ -87,47 +81,17 @@ describe("RefreshUseCase", () => {
             expect(result.message).toBe("認証成功");
             if (result.success) {
                 expect(result.data.accessToken).toBe("mock-access-token");
-                expect(result.data.refreshToken).toBe("new-mock-refresh-token");
             }
-        });
-
-        it("異常系: Originが不正な場合はエラーを返す", async () => {
-            // Act
-            const result = await useCase.execute(validRefreshToken, "http://invalid-origin.com", validCsrfToken);
-
-            // Assert
-            expect(result.success).toBe(false);
-            expect(result.status).toBe(HTTP_STATUS.UNAUTHORIZED);
-            expect(result.message).toBe("許可されていないOrigin");
-        });
-
-        it("異常系: Originがない場合はエラーを返す", async () => {
-            // Act
-            const result = await useCase.execute(validRefreshToken, undefined, validCsrfToken);
-
-            // Assert
-            expect(result.success).toBe(false);
-            expect(result.status).toBe(HTTP_STATUS.UNAUTHORIZED);
-            expect(result.message).toBe("許可されていないOrigin");
-        });
-
-        it("異常系: CSRFトークンが不正な場合はエラーを返す", async () => {
-            // Act
-            const result = await useCase.execute(validRefreshToken, validOrigin, "invalid-csrf");
-
-            // Assert
-            expect(result.success).toBe(false);
-            expect(result.status).toBe(HTTP_STATUS.UNAUTHORIZED);
-            expect(result.message).toBe("カスタムヘッダが不正");
         });
 
         it("異常系: ユーザーが見つからない場合はエラーを返す", async () => {
             // Arrange
             const mockService = (useCase as any).service;
             mockService.getUser = vi.fn().mockResolvedValue(null);
+            const refreshToken = RefreshToken.get("valid-refresh-token");
 
             // Act
-            const result = await useCase.execute(validRefreshToken, validOrigin, validCsrfToken);
+            const result = await useCase.execute(refreshToken);
 
             // Assert
             expect(result.success).toBe(false);
@@ -140,9 +104,10 @@ describe("RefreshUseCase", () => {
             const mockService = (useCase as any).service;
             mockService.getUser = vi.fn().mockResolvedValue(mockUserInfo);
             mockRefreshTokenInstance.isAbsoluteExpired.mockResolvedValue(true);
+            const refreshToken = RefreshToken.get("valid-refresh-token");
 
             // Act
-            const result = await useCase.execute(validRefreshToken, validOrigin, validCsrfToken);
+            const result = await useCase.execute(refreshToken);
 
             // Assert
             expect(result.success).toBe(false);

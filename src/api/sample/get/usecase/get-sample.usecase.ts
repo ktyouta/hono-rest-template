@@ -1,26 +1,27 @@
-import { HTTP_STATUS } from "../../../../const";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
+import { HTTP_STATUS } from "../../../../constant";
 import type { GetSampleResponseType } from "../dto";
 import { GetSampleResponseDto } from "../dto";
 import type { GetSampleService } from "../service";
 
 type Output =
   | {
-      success: true;
-      status: number;
-      message: string;
-      data: GetSampleResponseType;
-    }
+    success: true;
+    status: ContentfulStatusCode;
+    message: string;
+    data: GetSampleResponseType;
+  }
   | {
-      success: false;
-      status: number;
-      message: string;
-    };
+    success: false;
+    status: ContentfulStatusCode;
+    message: string;
+  };
 
 /**
  * サンプル取得ユースケース
  */
 export class GetSampleUseCase {
-  constructor(private readonly service: GetSampleService) {}
+  constructor(private readonly service: GetSampleService) { }
 
   async execute(id: number): Promise<Output> {
     const entity = await this.service.findById(id);

@@ -1,14 +1,14 @@
-import { eq, and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { FLG } from "../../../../constant";
 import type { Database, Sample } from "../../../../infrastructure/db";
 import { sample } from "../../../../infrastructure/db";
-import { FLG } from "../../../../const";
 import type { IUpdateSampleRepository, UpdateSampleInput } from "./update-sample.repository.interface";
 
 /**
  * サンプル更新リポジトリ実装
  */
 export class UpdateSampleRepository implements IUpdateSampleRepository {
-  constructor(private readonly db: Database) {}
+  constructor(private readonly db: Database) { }
 
   /**
    * 更新

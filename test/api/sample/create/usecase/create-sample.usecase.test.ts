@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { CreateSampleUseCase } from "../../../../../src/api/sample/create/usecase/create-sample.usecase";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CreateSampleEntity } from "../../../../../src/api/sample/create/entity/create-sample.entity";
-import { HTTP_STATUS } from "../../../../../src/const";
 import type { CreateSampleService } from "../../../../../src/api/sample/create/service/create-sample.service";
+import { CreateSampleUseCase } from "../../../../../src/api/sample/create/usecase/create-sample.usecase";
+import { HTTP_STATUS } from "../../../../../src/constant";
 
 
 describe("CreateSampleUseCase", () => {

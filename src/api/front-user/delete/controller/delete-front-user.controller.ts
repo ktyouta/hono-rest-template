@@ -1,8 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { setCookie } from "hono/cookie";
-import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { API_ENDPOINT, HTTP_STATUS } from "../../../../const";
+import { API_ENDPOINT, HTTP_STATUS } from "../../../../constant";
 import { FrontUserId, RefreshToken } from "../../../../domain";
 import { createDbClient } from "../../../../infrastructure/db";
 import { authMiddleware, userOperationGuardMiddleware } from "../../../../middleware";
@@ -24,12 +23,7 @@ deleteFrontUser.delete(
     authMiddleware,
     zValidator("param", UserIdParamSchema, (result, c) => {
         if (!result.success) {
-            return ApiResponse.create(
-                c,
-                HTTP_STATUS.BAD_REQUEST,
-                "パラメータが不正です。",
-                formatZodErrors(result.error)
-            );
+            return ApiResponse.create(c, HTTP_STATUS.BAD_REQUEST, "パラメータが不正です。", formatZodErrors(result.error));
         }
     }),
     async (c) => {
@@ -41,23 +35,15 @@ deleteFrontUser.delete(
         const result = await useCase.execute(FrontUserId.of(Number(userId)));
 
         if (!result.success) {
-            return ApiResponse.create(
-                c,
-                result.status as ContentfulStatusCode,
-                result.message
-            );
+            return ApiResponse.create(c, result.status, result.message);
         }
 
         // リフレッシュトークンCookieをクリア
-        setCookie(
-            c,
-            RefreshToken.COOKIE_KEY,
-            "",
-            RefreshToken.COOKIE_CLEAR_OPTION
-        );
+        setCookie(c, RefreshToken.COOKIE_KEY, "", RefreshToken.COOKIE_CLEAR_OPTION);
 
         return c.body(null, HTTP_STATUS.NO_CONTENT);
     }
 );
 
 export { deleteFrontUser };
+

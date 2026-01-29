@@ -1,26 +1,27 @@
-import { HTTP_STATUS } from "../../../../const";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { envConfig } from "../../../../config";
-import type { Database } from "../../../../infrastructure/db";
+import { HTTP_STATUS } from "../../../../constant";
 import {
-    FrontUserName,
-    FrontUserBirthday,
-    FrontUserSalt,
-    FrontUserPassword,
-    Pepper,
     AccessToken,
+    FrontUserBirthday,
+    FrontUserName,
+    FrontUserPassword,
+    FrontUserSalt,
+    Pepper,
     RefreshToken,
 } from "../../../../domain";
-import { CreateFrontUserRepository } from "../repository";
-import { CreateFrontUserService } from "../service";
-import { FrontUserEntity, FrontUserLoginEntity } from "../entity";
+import type { Database } from "../../../../infrastructure/db";
 import { CreateFrontUserResponseDto, CreateFrontUserResponseType } from "../dto";
+import { FrontUserEntity, FrontUserLoginEntity } from "../entity";
+import { CreateFrontUserRepository } from "../repository";
 import type { CreateFrontUserSchemaType } from "../schema";
+import { CreateFrontUserService } from "../service";
 
 
 type Output =
     | {
         success: true;
-        status: number;
+        status: ContentfulStatusCode;
         message: string;
         data: {
             response: CreateFrontUserResponseType;
@@ -29,7 +30,7 @@ type Output =
     }
     | {
         success: false;
-        status: number;
+        status: ContentfulStatusCode;
         message: string;
     };
 

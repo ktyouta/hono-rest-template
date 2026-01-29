@@ -1,14 +1,13 @@
-import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { API_ENDPOINT, HTTP_STATUS } from "../../../../const";
+import { Hono } from "hono";
+import { API_ENDPOINT, HTTP_STATUS } from "../../../../constant";
+import { createDbClient } from "../../../../infrastructure/db";
 import type { AppEnv } from "../../../../type";
 import { ApiResponse, formatZodErrors } from "../../../../util";
-import { createDbClient } from "../../../../infrastructure/db";
 import { CreateSampleRepository } from "../repository";
+import { CreateSampleSchema } from "../schema";
 import { CreateSampleService } from "../service";
 import { CreateSampleUseCase } from "../usecase";
-import { CreateSampleSchema } from "../schema";
 
 const createSample = new Hono<AppEnv>();
 
@@ -20,12 +19,7 @@ createSample.post(
   API_ENDPOINT.SAMPLE,
   zValidator("json", CreateSampleSchema, (result, c) => {
     if (!result.success) {
-      return ApiResponse.create(
-        c,
-        HTTP_STATUS.UNPROCESSABLE_ENTITY,
-        "バリデーションエラー",
-        formatZodErrors(result.error)
-      );
+      return ApiResponse.create(c, HTTP_STATUS.UNPROCESSABLE_ENTITY, "バリデーションエラー", formatZodErrors(result.error));
     }
   }),
   async (c) => {
@@ -37,13 +31,9 @@ createSample.post(
 
     const result = await useCase.execute(body);
 
-    return ApiResponse.create(
-      c,
-      result.status as ContentfulStatusCode,
-      result.message,
-      result.data
-    );
+    return ApiResponse.create(c, result.status, result.message, result.data);
   }
 );
 
 export { createSample };
+

@@ -1,25 +1,26 @@
-import { HTTP_STATUS } from "../../../const";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { envConfig } from "../../../config";
-import type { Database } from "../../../infrastructure/db";
+import { HTTP_STATUS } from "../../../constant";
 import {
-    FrontUserName,
-    FrontUserId,
-    FrontUserSalt,
-    FrontUserPassword,
-    Pepper,
     AccessToken,
+    FrontUserId,
+    FrontUserName,
+    FrontUserPassword,
+    FrontUserSalt,
+    Pepper,
     RefreshToken,
 } from "../../../domain";
-import { FrontUserLoginRepository } from "../repository";
-import { FrontUserLoginService } from "../service";
+import type { Database } from "../../../infrastructure/db";
 import { FrontUserLoginResponseDto, FrontUserLoginResponseType } from "../dto";
+import { FrontUserLoginRepository } from "../repository";
 import type { FrontUserLoginSchemaType } from "../schema";
+import { FrontUserLoginService } from "../service";
 
 
 type Output =
     | {
         success: true;
-        status: number;
+        status: ContentfulStatusCode;
         message: string;
         data: {
             response: FrontUserLoginResponseType;
@@ -28,7 +29,7 @@ type Output =
     }
     | {
         success: false;
-        status: number;
+        status: ContentfulStatusCode;
         message: string;
     };
 

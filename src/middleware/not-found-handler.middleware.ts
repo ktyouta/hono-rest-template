@@ -1,5 +1,5 @@
 import type { NotFoundHandler } from "hono";
-import { HTTP_STATUS } from "../const";
+import { HTTP_STATUS } from "../constant";
 import type { AppEnv } from "../type";
 
 /**

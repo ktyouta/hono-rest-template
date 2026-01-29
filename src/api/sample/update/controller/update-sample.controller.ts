@@ -1,14 +1,13 @@
-import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { API_ENDPOINT, HTTP_STATUS } from "../../../../const";
+import { Hono } from "hono";
+import { API_ENDPOINT, HTTP_STATUS } from "../../../../constant";
+import { createDbClient } from "../../../../infrastructure/db";
 import type { AppEnv } from "../../../../type";
 import { ApiResponse, formatZodErrors } from "../../../../util";
-import { createDbClient } from "../../../../infrastructure/db";
 import { UpdateSampleRepository } from "../repository";
+import { UpdateSampleParamSchema, UpdateSampleSchema } from "../schema";
 import { UpdateSampleService } from "../service";
 import { UpdateSampleUseCase } from "../usecase";
-import { UpdateSampleSchema, UpdateSampleParamSchema } from "../schema";
 
 const updateSample = new Hono<AppEnv>();
 
@@ -20,22 +19,12 @@ updateSample.put(
   `${API_ENDPOINT.SAMPLE}/:id`,
   zValidator("param", UpdateSampleParamSchema, (result, c) => {
     if (!result.success) {
-      return ApiResponse.create(
-        c,
-        HTTP_STATUS.BAD_REQUEST,
-        "パラメータが不正です。",
-        formatZodErrors(result.error)
-      );
+      return ApiResponse.create(c, HTTP_STATUS.BAD_REQUEST, "パラメータが不正です。", formatZodErrors(result.error));
     }
   }),
   zValidator("json", UpdateSampleSchema, (result, c) => {
     if (!result.success) {
-      return ApiResponse.create(
-        c,
-        HTTP_STATUS.UNPROCESSABLE_ENTITY,
-        "バリデーションエラー",
-        formatZodErrors(result.error)
-      );
+      return ApiResponse.create(c, HTTP_STATUS.UNPROCESSABLE_ENTITY, "バリデーションエラー", formatZodErrors(result.error));
     }
   }),
   async (c) => {
@@ -49,20 +38,12 @@ updateSample.put(
     const result = await useCase.execute(Number(id), body);
 
     if (!result.success) {
-      return ApiResponse.create(
-        c,
-        result.status as ContentfulStatusCode,
-        result.message
-      );
+      return ApiResponse.create(c, result.status, result.message);
     }
 
-    return ApiResponse.create(
-      c,
-      result.status as ContentfulStatusCode,
-      result.message,
-      result.data
-    );
+    return ApiResponse.create(c, result.status, result.message, result.data);
   }
 );
 
 export { updateSample };
+

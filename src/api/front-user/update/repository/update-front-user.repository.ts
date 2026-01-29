@@ -1,15 +1,15 @@
-import { eq, and, ne } from "drizzle-orm";
-import type { Database, FrontUserMaster } from "../../../../infrastructure/db";
-import { frontUserMaster, frontUserLoginMaster } from "../../../../infrastructure/db";
-import { FLG } from "../../../../const";
+import { and, eq, ne } from "drizzle-orm";
+import { FLG } from "../../../../constant";
 import type { FrontUserId, FrontUserName } from "../../../../domain";
+import type { Database, FrontUserMaster } from "../../../../infrastructure/db";
+import { frontUserLoginMaster, frontUserMaster } from "../../../../infrastructure/db";
 import type { IUpdateFrontUserRepository } from "./update-front-user.repository.interface";
 
 /**
  * ユーザー更新リポジトリ実装
  */
 export class UpdateFrontUserRepository implements IUpdateFrontUserRepository {
-  constructor(private readonly db: Database) {}
+  constructor(private readonly db: Database) { }
 
   /**
    * 他のユーザーで同じユーザー名が存在するかチェック

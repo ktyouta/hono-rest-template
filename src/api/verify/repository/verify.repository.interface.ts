@@ -2,9 +2,9 @@ import type { FrontUserId } from "../../../domain";
 import type { FrontUserMaster } from "../../../infrastructure/db";
 
 /**
- * リフレッシュリポジトリインターフェース
+ * 認証チェックリポジトリインターフェース
  */
-export interface IAuthRepository {
+export interface IVerifyRepository {
     /**
      * ユーザーIDでユーザー情報を取得
      * @param userId ユーザーID

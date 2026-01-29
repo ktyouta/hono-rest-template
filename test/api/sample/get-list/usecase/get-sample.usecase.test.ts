@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { GetListSampleEntity } from "../../../../../src/api/sample/get-list/entity/get-list-sample.entity";
 import type { GetListSampleService } from "../../../../../src/api/sample/get-list/service/get-list-sample.service";
 import { GetListSampleUseCase } from "../../../../../src/api/sample/get-list/usecase/get-list-sample.usecase";
-import { HTTP_STATUS } from "../../../../../src/const";
+import { HTTP_STATUS } from "../../../../../src/constant";
 
 
 describe("GetListSampleUseCase (get-list)", () => {

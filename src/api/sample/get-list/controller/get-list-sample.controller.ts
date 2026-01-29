@@ -1,9 +1,8 @@
 import { Hono } from "hono";
-import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { API_ENDPOINT } from "../../../../const";
+import { API_ENDPOINT } from "../../../../constant";
+import { createDbClient } from "../../../../infrastructure/db";
 import type { AppEnv } from "../../../../type";
 import { ApiResponse } from "../../../../util";
-import { createDbClient } from "../../../../infrastructure/db";
 import { GetListSampleRepository } from "../repository";
 import { GetListSampleService } from "../service";
 import { GetListSampleUseCase } from "../usecase";
@@ -22,12 +21,8 @@ getListSample.get(API_ENDPOINT.SAMPLE, async (c) => {
 
   const result = await useCase.execute();
 
-  return ApiResponse.create(
-    c,
-    result.status as ContentfulStatusCode,
-    result.message,
-    result.data
-  );
+  return ApiResponse.create(c, result.status, result.message, result.data);
 });
 
 export { getListSample };
+

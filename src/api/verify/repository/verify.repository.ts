@@ -1,14 +1,14 @@
 import { and, eq } from "drizzle-orm";
-import { FLG } from "../../../const";
+import { FLG } from "../../../constant";
 import type { FrontUserId } from "../../../domain";
 import type { Database, FrontUserMaster } from "../../../infrastructure/db";
 import { frontUserMaster } from "../../../infrastructure/db";
-import type { IAuthRepository } from "./auth.repository.interface";
+import type { IVerifyRepository } from "./verify.repository.interface";
 
 /**
  * 認証チェックリポジトリ実装
  */
-export class AuthRepository implements IAuthRepository {
+export class VerifyRepository implements IVerifyRepository {
     constructor(private readonly db: Database) { }
 
     /**

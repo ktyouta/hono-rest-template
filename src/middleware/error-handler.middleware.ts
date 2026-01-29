@@ -1,7 +1,7 @@
 import type { ErrorHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { HTTP_STATUS } from "../const";
+import { HTTP_STATUS } from "../constant";
 import type { AppEnv } from "../type";
 
 /**

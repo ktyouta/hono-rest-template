@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DeleteFrontUserUseCase } from "../../../../../src/api/front-user/delete/usecase/delete-front-user.usecase";
-import { HTTP_STATUS } from "../../../../../src/const";
+import { HTTP_STATUS } from "../../../../../src/constant";
 import { FrontUserId } from "../../../../../src/domain";
 import type { Database } from "../../../../../src/infrastructure/db";
 
@@ -44,7 +44,6 @@ describe("DeleteFrontUserUseCase", () => {
 
             // Assert
             expect(result.success).toBe(true);
-            expect(result.status).toBe(HTTP_STATUS.NO_CONTENT);
             expect(result.message).toBe("ユーザーの削除が完了しました。");
         });
 
@@ -59,7 +58,9 @@ describe("DeleteFrontUserUseCase", () => {
 
             // Assert
             expect(result.success).toBe(false);
-            expect(result.status).toBe(HTTP_STATUS.NOT_FOUND);
+            if (!result.success) {
+                expect(result.status).toBe(HTTP_STATUS.NOT_FOUND);
+            }
             expect(result.message).toBe("ユーザーが見つかりません。");
         });
     });

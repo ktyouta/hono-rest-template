@@ -1,20 +1,19 @@
-import { HTTP_STATUS } from "../../../../const";
-import type { Database } from "../../../../infrastructure/db";
+import { HTTP_STATUS } from "../../../../constant";
 import { FrontUserId } from "../../../../domain";
+import type { Database } from "../../../../infrastructure/db";
 import { DeleteFrontUserRepository } from "../repository";
 import { DeleteFrontUserService } from "../service";
 
 type Output =
   | {
-      success: true;
-      status: number;
-      message: string;
-    }
+    success: true;
+    message: string;
+  }
   | {
-      success: false;
-      status: number;
-      message: string;
-    };
+    success: false;
+    status: typeof HTTP_STATUS.NOT_FOUND;
+    message: string;
+  };
 
 /**
  * ユーザー削除ユースケース
@@ -44,7 +43,6 @@ export class DeleteFrontUserUseCase {
 
     return {
       success: true,
-      status: HTTP_STATUS.NO_CONTENT,
       message: "ユーザーの削除が完了しました。",
     };
   }

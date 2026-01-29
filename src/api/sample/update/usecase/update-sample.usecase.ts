@@ -1,27 +1,28 @@
-import { HTTP_STATUS } from "../../../../const";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
+import { HTTP_STATUS } from "../../../../constant";
 import type { UpdateSampleResponseType } from "../dto";
 import { UpdateSampleResponseDto } from "../dto";
-import type { UpdateSampleService } from "../service";
 import type { UpdateSampleSchemaType } from "../schema";
+import type { UpdateSampleService } from "../service";
 
 type Output =
   | {
-      success: true;
-      status: number;
-      message: string;
-      data: UpdateSampleResponseType;
-    }
+    success: true;
+    status: ContentfulStatusCode;
+    message: string;
+    data: UpdateSampleResponseType;
+  }
   | {
-      success: false;
-      status: number;
-      message: string;
-    };
+    success: false;
+    status: ContentfulStatusCode;
+    message: string;
+  };
 
 /**
  * サンプル更新ユースケース
  */
 export class UpdateSampleUseCase {
-  constructor(private readonly service: UpdateSampleService) {}
+  constructor(private readonly service: UpdateSampleService) { }
 
   async execute(id: number, input: UpdateSampleSchemaType): Promise<Output> {
     const entity = await this.service.update(id, input.name, input.description);

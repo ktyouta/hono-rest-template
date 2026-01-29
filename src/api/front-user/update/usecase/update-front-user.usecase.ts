@@ -1,21 +1,22 @@
-import { HTTP_STATUS } from "../../../../const";
-import type { Database } from "../../../../infrastructure/db";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
+import { HTTP_STATUS } from "../../../../constant";
 import {
+    FrontUserBirthday,
     FrontUserId,
     FrontUserName,
-    FrontUserBirthday,
     RefreshToken,
 } from "../../../../domain";
-import { UpdateFrontUserRepository } from "../repository";
-import { UpdateFrontUserService } from "../service";
+import type { Database } from "../../../../infrastructure/db";
 import { UpdateFrontUserResponseDto, UpdateFrontUserResponseType } from "../dto";
+import { UpdateFrontUserRepository } from "../repository";
 import type { UpdateFrontUserSchemaType } from "../schema";
+import { UpdateFrontUserService } from "../service";
 
 
 type Output =
     | {
         success: true;
-        status: number;
+        status: ContentfulStatusCode;
         message: string;
         data: {
             response: UpdateFrontUserResponseType;
@@ -24,7 +25,7 @@ type Output =
     }
     | {
         success: false;
-        status: number;
+        status: ContentfulStatusCode;
         message: string;
     };
 

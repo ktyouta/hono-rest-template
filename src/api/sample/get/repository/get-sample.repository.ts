@@ -1,14 +1,14 @@
-import { eq, and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { FLG } from "../../../../constant";
 import type { Database, Sample } from "../../../../infrastructure/db";
 import { sample } from "../../../../infrastructure/db";
-import { FLG } from "../../../../const";
 import type { IGetSampleRepository } from "./get-sample.repository.interface";
 
 /**
  * サンプル取得リポジトリ実装
  */
 export class GetSampleRepository implements IGetSampleRepository {
-  constructor(private readonly db: Database) {}
+  constructor(private readonly db: Database) { }
 
   /**
    * ID指定で取得
